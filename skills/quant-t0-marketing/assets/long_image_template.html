@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>量化T0 持仓机会诊断 · 营销长图模板</title>
+<style>
+  /* ============ 量化T0营销长图模板 ============
+     使用说明：
+     1. 本文件为模板，使用时复制到输出目录，替换 {{占位符}} 为真实数据；
+     2. 遵守 references/longimage-design.md 的配色（涨红跌绿）；
+     3. 页面宽 750px，导出时整页截图或打印为长图。
+     ============================================== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 750px;
+    margin: 0 auto;
+    background: #F6F7FB;
+    font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    color: #1F2937;
+  }
+  /* 涨红跌绿色板 */
+  .up   { color: #E53935; }   /* 涨/正收益 - 红 */
+  .down { color: #2E7D32; }   /* 跌/负收益 - 绿 */
+
+  /* ===== 1. 头图区 ===== */
+  .hero {
+    background: linear-gradient(135deg, #1E3A8A 0%, #274B9F 60%, #3158B5 100%);
+    color: #fff;
+    padding: 64px 48px 56px;
+    border-radius: 0 0 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; right: -80px; top: -80px;
+    width: 280px; height: 280px;
+    border: 36px solid rgba(201,162,39,.18);
+    border-radius: 50%;
+  }
+  .hero .tag {
+    display: inline-block; padding: 8px 20px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 999px;
+    font-size: 22px; letter-spacing: 2px;
+  }
+  .hero h1 {
+    margin-top: 28px;
+    font-size: 46px; font-weight: 700; letter-spacing: 2px;
+  }
+  .hero .sub {
+    margin-top: 18px; font-size: 24px; color: rgba(255,255,255,.82);
+  }
+  .hero .gold-line {
+    margin-top: 26px; height: 6px; width: 96px;
+    background: #C9A227; border-radius: 3px;
+  }
+
+  /* ===== 2. 交集概览 ===== */
+  .section { padding: 40px 40px 8px; }
+  .section-title { font-size: 30px; font-weight: 700; margin-bottom: 8px; }
+  .section-desc { font-size: 23px; color: #6B7280; line-height: 1.6; }
+  .badges { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+  .badge {
+    padding: 10px 20px; background: #fff; border-radius: 999px;
+    border: 1px solid #E5E7EB; font-size: 22px; font-weight: 600;
+  }
+  .badge b { color: #1E3A8A; }
+
+  /* ===== 3. 标的收益对比卡片 ===== */
+  .stock-card {
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    margin: 24px 40px; padding: 30px;
+  }
+  .stock-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .stock-name { font-size: 28px; font-weight: 700; }
+  .stock-code { font-size: 20px; color: #9CA3AF; margin-left: 12px; }
+  .stock-hold { font-size: 20px; color: #6B7280; }
+  .stock-hold b { color: #1F2937; }
+  .period {
+    margin-top: 10px; font-size: 20px; color: #6B7280;
+    background: #F3F4F6; display: inline-block; padding: 6px 14px; border-radius: 8px;
+  }
+  /* 对比条形图 */
+  .bars { margin-top: 22px; }
+  .bar-row { display: flex; align-items: center; margin-top: 14px; }
+  .bar-label { width: 190px; font-size: 21px; color: #4B5563; }
+  .bar-track { flex: 1; }
+  .bar-fill {
+    height: 34px; border-radius: 8px; display: flex; align-items: center;
+    padding-left: 14px; color: #fff; font-size: 20px; font-weight: 700;
+    min-width: 46px;
+  }
+  .bar-fill.market-up   { background: #E53935; }
+  .bar-fill.market-down { background: #2E7D32; }
+  .bar-fill.t0-up       { background: #E53935; } /* T0盈利率为正：红；为负时改用 market-down 绿 */
+  .bar-val { width: 200px; text-align: right; font-size: 24px; font-weight: 700; }
+  /* 数字并排对比 */
+  .compare {
+    display: flex; gap: 14px; margin-top: 24px;
+    border-top: 1px dashed #E5E7EB; padding-top: 20px;
+  }
+  .compare-box {
+    flex: 1; background: #F9FAFB; border-radius: 14px; padding: 16px;
+    text-align: center;
+  }
+  .compare-box .label { font-size: 19px; color: #6B7280; }
+  .compare-box .num { font-size: 34px; font-weight: 700; margin-top: 6px; }
+  .extra {
+    margin-top: 12px; text-align: center; font-size: 22px; color: #4B5563;
+  }
+  .extra .pp { font-weight: 700; }
+
+  /* ===== 4. 策略亮点 ===== */
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 30px 40px 0; }
+  .feature {
+    background: #fff; border-radius: 16px; padding: 22px;
+    border: 1px solid #E5E7EB;
+  }
+  .feature .icon { font-size: 34px; }
+  .feature .ft-title { font-size: 23px; font-weight: 700; margin-top: 10px; }
+  .feature .ft-desc { font-size: 19px; color: #6B7280; margin-top: 6px; line-height: 1.5; }
+
+  /* ===== 5. CTA ===== */
+  .cta {
+    margin: 40px; text-align: center; background: #1E3A8A;
+    border-radius: 20px; padding: 36px 24px; color: #fff;
+  }
+  .cta .btn {
+    display: inline-block; background: #C9A227; color: #1E3A8A;
+    font-size: 28px; font-weight: 700; padding: 16px 48px;
+    border-radius: 999px; margin-top: 18px;
+  }
+  .cta .hint { margin-top: 14px; font-size: 19px; color: rgba(255,255,255,.75); }
+
+  /* ===== 6. 免责声明 ===== */
+  .disclaimer {
+    margin: 0 40px 48px; padding: 20px 24px;
+    background: #F3F4F6; border-radius: 14px;
+    font-size: 17px; color: #9CA3AF; line-height: 1.7; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 1. 头图区 -->
+  <div class="hero">
+    <span class="tag">量化T0 · 持仓机会诊断</span>
+    <h1>{{客户尊称}}，您的持仓<br>藏着「增厚收益」的机会</h1>
+    <p class="sub">{{生成日期}} · 基于您最新持仓自动分析</p>
+    <div class="gold-line"></div>
+  </div>
+
+  <!-- 2. 持仓交集概览 -->
+  <div class="section">
+    <div class="section-title">您的持仓中，有 <span class="up">{{匹配只数}}</span> 只股票与量化T0策略高度匹配</div>
+    <div class="section-desc">波动大 = 做T空间大。量化T0 在您熟悉的持仓上，把波动变成收益。</div>
+    <div class="badges">
+      <!-- 每只匹配标的一个徽章：{{标的名}} -->
+      <div class="badge"><b>{{标的名}}</b> {{代码}}</div>
+    </div>
+  </div>
+
+  <!-- 3. 标的收益对比（每只匹配标的一张卡片，复制此卡片） -->
+  <div class="stock-card">
+    <div class="stock-head">
+      <div>
+        <span class="stock-name">{{标的名}}</span>
+        <span class="stock-code">{{代码}}</span>
+      </div>
+      <div class="stock-hold">持仓市值 <b>{{持仓市值}}</b></div>
+    </div>
+    <div class="period">回测区间：{{开始日期}} ~ {{结束日期}}</div>
+
+    <div class="bars">
+      <!-- 市场实际涨跌幅：涨用 .market-up 红，跌用 .market-down 绿；宽度按比例 -->
+      <div class="bar-row">
+        <div class="bar-label">市场实际涨跌幅</div>
+        <div class="bar-track"><div class="bar-fill market-up" style="width:{{宽度}}%">{{市场涨跌幅}}</div></div>
+        <div class="bar-val up">+{{市场涨跌幅}}%</div>
+      </div>
+      <!-- 量化T0区间盈利率：正收益红色柱（t0-up），负收益用 market-down 绿柱 -->
+      <div class="bar-row">
+        <div class="bar-label">量化T0区间盈利率</div>
+        <div class="bar-track"><div class="bar-fill t0-up" style="width:{{宽度}}%">{{区间盈利率}}</div></div>
+        <div class="bar-val up">+{{区间盈利率}}%</div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-box">
+        <div class="label">市场实际涨跌幅</div>
+        <div class="num up">+{{市场涨跌幅}}%</div>
+      </div>
+      <div class="compare-box">
+        <div class="label">量化T0区间盈利率</div>
+        <div class="num up">+{{区间盈利率}}%</div>
+      </div>
+    </div>
+    <div class="extra">
+      波动 <span class="up">+{{市场涨跌幅}}%</span> → 量化T0 为您增厚 <span class="pp up">+{{增厚幅度}}pp</span>
+    </div>
+  </div>
+
+  <!-- 4. 策略亮点 -->
+  <div class="section-title" style="padding:0 40px;">为什么值得一试？</div>
+  <div class="features">
+    <div class="feature">
+      <div class="icon">🔄</div>
+      <div class="ft-title">日内回转 · 不动底仓</div>
+      <div class="ft-desc">只做日内高抛低吸，持仓逻辑和底仓一股不动</div>
+    </div>
+    <div class="feature">
+      <div class="icon">🤖</div>
+      <div class="ft-title">全自动盯盘执行</div>
+      <div class="ft-desc">系统自动捕捉信号，无需人工盯盘</div>
+    </div>
+    <div class="feature">
+      <div class="icon">📈</div>
+      <div class="ft-title">涨跌均有信号</div>
+      <div class="ft-desc">行情活跃就有交易机会，不赌方向</div>
+    </div>
+    <div class="feature">
+      <div class="icon">🛡️</div>
+      <div class="ft-title">专业团队风控</div>
+      <div class="ft-desc">严格风控纪律，控制日内风险</div>
+    </div>
+  </div>
+
+  <!-- 5. CTA -->
+  <div class="cta">
+    <div style="font-size:26px;font-weight:700;">{{标的名}} 这只票，适合您跑T0吗？</div>
+    <div class="btn">了解我的持仓 T0 方案</div>
+    <div class="hint">回复即可获取专属回测明细 · 一对一讲解</div>
+  </div>
+
+  <!-- 6. 免责声明 -->
+  <div class="disclaimer">
+    本材料由量化T0策略回测数据生成，仅供交流参考，不构成任何投资建议。回测收益不代表未来表现，市场有风险，投资需谨慎。
+  </div>
+
+</body>
+</html>
